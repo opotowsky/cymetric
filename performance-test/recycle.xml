@@ -1,0 +1,130 @@
+<simulation xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <control>
+    <duration>2400</duration>
+    <startmonth>1</startmonth>
+    <startyear>2000</startyear>
+    <!-- <dt>86400</dt> -->
+    <decay>never</decay>
+    <explicit_inventory>false</explicit_inventory>
+    <explicit_inventory_compact>false</explicit_inventory_compact>
+  </control>
+
+  <archetypes>
+    <spec> <lib>cycamore</lib> <name>GrowthRegion</name></spec>
+    <spec> <lib>cycamore</lib> <name>ManagerInst</name></spec>
+    <spec> <lib>cycamore</lib> <name>Source</name></spec>
+    <spec> <lib>cycamore</lib> <name>Sink</name></spec>
+    <spec> <lib>cycamore</lib> <name>Reactor</name> </spec>
+  </archetypes>
+
+  <facility>
+    <name>fuel_source</name>
+    <config>
+      <Source>
+        <outcommod>fresh_fuel</outcommod>
+        <outrecipe>fresh_fuel</outrecipe>
+        <throughput>1e100</throughput>
+      </Source>
+    </config>
+  </facility>
+
+
+  <facility>
+    <name>fuel_sink</name>
+    <config>
+      <Sink>
+        <in_commods><val>spent_fuel</val></in_commods>
+        <capacity>1e100</capacity>
+      </Sink>
+    </config>
+  </facility>
+
+  <facility>
+    <name>lw_reactor</name>
+    <lifetime>960</lifetime>
+    <config>
+      <Reactor>
+        <fuel_inrecipes>  <val>fresh_fuel</val></fuel_inrecipes>
+        <fuel_outrecipes> <val>spent_fuel</val></fuel_outrecipes>
+        <fuel_incommods>  <val>fresh_fuel</val></fuel_incommods>
+        <fuel_outcommods> <val>spent_fuel</val></fuel_outcommods>
+  
+        <cycle_time>9</cycle_time>
+        <refuel_time>0</refuel_time>
+        <assem_size>14784</assem_size>
+        <n_assem_core>6</n_assem_core>
+        <n_assem_batch>1</n_assem_batch>
+        <power_cap>900</power_cap>
+      </Reactor>
+    </config>
+  </facility>
+
+
+  <region>
+    <name>GrowthRegion</name>
+    <config>
+      <GrowthRegion>
+        <growth>
+	  <item>
+	    <commodity>power</commodity>
+	    <piecewise_function>
+	      <piece>
+	        <start>0</start>
+		<function>
+		  <type>linear</type>
+		  <params>0 100000</params>
+		</function>
+	      </piece>
+	    </piecewise_function>
+	  </item>
+	</growth>
+      </GrowthRegion>
+    </config>
+    <institution>
+      <name>ManagerInstitution</name>
+      <initialfacilitylist>
+        <prototype>fuel_source</prototype>
+	<number>1</number>
+        <prototype>lw_reactor</prototype>
+	<number>100</number>
+        <prototype>fuel_sink</prototype>
+	<number>1</number>
+      </initialfacilitylist>
+      <config>
+        <ManagerInst>
+	  <prototypes>
+	    <val>fuel_source</val>
+	    <val>lw_reactor</val>
+	    <val>fuel_sink</val>
+	  </prototypes>
+	</ManagerInst>
+      </config>
+    </institution>
+  </facility>
+
+  <recipe>
+    <name>fresh_fuel</name>
+    <basis>mass</basis>
+    <nuclide> <id>U235</id><comp>0.042</comp></nuclide>
+    <nuclide><id>U238</id><comp>0.958</comp></nuclide>
+  </recipe>
+
+  <recipe>
+    <name>spent_fuel</name>
+    <basis>mass</basis>
+    <nuclide> <id>U235</id> <comp>.008</comp> </nuclide>
+    <nuclide> <id>U238</id> <comp>0.9268</comp> </nuclide>
+    <nuclide> <id>Pu239</id> <comp>0.012</comp> </nuclide>
+    <nuclide> <id>Am241</id> <comp>0.0011</comp> </nuclide>
+    <nuclide> <id>La139</id> <comp>0.005866</comp> </nuclide>
+    <nuclide> <id>Ce140</id> <comp>0.005911</comp> </nuclide>
+    <nuclide> <id>Ce142</id> <comp>0.005727</comp> </nuclide>
+    <nuclide> <id>Pr141</id> <comp>0.005652</comp> </nuclide>
+    <nuclide> <id>Nd143</id> <comp>0.005103</comp> </nuclide>
+    <nuclide> <id>Nd144</id> <comp>0.005708</comp> </nuclide>
+    <nuclide> <id>Nd146</id> <comp>0.005102</comp> </nuclide>
+    <nuclide> <id>Cs137</id> <comp>0.0521</comp> </nuclide>
+  </recipe>
+
+</simulation>
