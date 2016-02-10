@@ -11,10 +11,10 @@
   </control>
 
   <archetypes>
-    <spec> <lib>cycamore</lib> <name>GrowthRegion</name></spec>
-    <spec> <lib>cycamore</lib> <name>ManagerInst</name></spec>
-    <spec> <lib>cycamore</lib> <name>Source</name></spec>
-    <spec> <lib>cycamore</lib> <name>Sink</name></spec>
+    <spec> <lib>cycamore</lib> <name>GrowthRegion</name> </spec>
+    <spec> <lib>cycamore</lib> <name>ManagerInst</name> </spec>
+    <spec> <lib>cycamore</lib> <name>Source</name> </spec>
+    <spec> <lib>cycamore</lib> <name>Sink</name> </spec>
     <spec> <lib>cycamore</lib> <name>Reactor</name> </spec>
   </archetypes>
 
@@ -42,20 +42,20 @@
 
   <facility>
     <name>lw_reactor</name>
-    <lifetime>960</lifetime>
+    <!-- <lifetime>960</lifetime> -->
     <config>
       <Reactor>
-        <fuel_inrecipes>  <val>fresh_fuel</val></fuel_inrecipes>
-        <fuel_outrecipes> <val>spent_fuel</val></fuel_outrecipes>
-        <fuel_incommods>  <val>fresh_fuel</val></fuel_incommods>
-        <fuel_outcommods> <val>spent_fuel</val></fuel_outcommods>
+        <fuel_inrecipes>  <val>fresh_fuel</val> </fuel_inrecipes>
+        <fuel_outrecipes> <val>spent_fuel</val> </fuel_outrecipes>
+        <fuel_incommods>  <val>fresh_fuel</val> </fuel_incommods>
+        <fuel_outcommods> <val>spent_fuel</val> </fuel_outcommods>
   
         <cycle_time>9</cycle_time>
         <refuel_time>0</refuel_time>
         <assem_size>14784</assem_size>
         <n_assem_core>6</n_assem_core>
         <n_assem_batch>1</n_assem_batch>
-        <power_cap>900</power_cap>
+        <power_cap>1000</power_cap>
       </Reactor>
     </config>
   </facility>
@@ -67,13 +67,13 @@
       <GrowthRegion>
         <growth>
 	  <item>
-	    <commodity>power</commodity>
+	    <commod>power</commod>
 	    <piecewise_function>
 	      <piece>
 	        <start>0</start>
 		<function>
 		  <type>linear</type>
-		  <params>0 100000</params>
+		  <params>0 10000</params>
 		</function>
 	      </piece>
 	    </piecewise_function>
@@ -84,12 +84,18 @@
     <institution>
       <name>ManagerInstitution</name>
       <initialfacilitylist>
-        <prototype>fuel_source</prototype>
-	<number>1</number>
-        <prototype>lw_reactor</prototype>
-	<number>100</number>
-        <prototype>fuel_sink</prototype>
-	<number>1</number>
+        <entry>
+	  <prototype>fuel_source</prototype>
+	  <number>1</number>
+        </entry>
+        <entry>
+	  <prototype>lw_reactor</prototype>
+	  <number>10</number>
+        </entry>
+        <entry>
+          <prototype>fuel_sink</prototype>
+	  <number>1</number>
+        </entry>
       </initialfacilitylist>
       <config>
         <ManagerInst>
@@ -101,13 +107,13 @@
 	</ManagerInst>
       </config>
     </institution>
-  </facility>
+  </region>
 
   <recipe>
     <name>fresh_fuel</name>
     <basis>mass</basis>
-    <nuclide> <id>U235</id><comp>0.042</comp></nuclide>
-    <nuclide><id>U238</id><comp>0.958</comp></nuclide>
+    <nuclide> <id>U235</id> <comp>0.042</comp> </nuclide>
+    <nuclide> <id>U238</id> <comp>0.958</comp> </nuclide>
   </recipe>
 
   <recipe>
