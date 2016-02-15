@@ -4,13 +4,10 @@ import os
 import sqlite3
 import tables
 import numpy as np
-
-def change_growth_factor():
-
-    return 
+from tools import 
 
 def change_input(ref_input, growth_factor):
-    """Changes growth_factors of the Growth Region.
+    """Changes a growth factor of the Growth Region of the input file.
 
     Args:
         ref_input: The path to the reference input file 
@@ -24,12 +21,17 @@ def change_input(ref_input, growth_factor):
               "_" + ".xml"
     sim = open(new_sim, "w")
     ref = open(ref_input, "r")
+    
     # Change the growth factor value in the input file
-    change_growth_factor(fr, fw, growth_factor)
-    # write the rest of the file
+    # need more robust method for initial y value
+    y_init = 10000
     for f in ref:
+        if f.count("params"):
+            f = f.split("<")[0] + "<params>" + str(growth_factor) + \
+                " " + str(y_init) + "</params>\n"
+        # write the rest of the file
         sim.write(f)
-
+    
     # Closing open files
     ref.close()
     sim.close()
@@ -62,9 +64,8 @@ def test_facilities():
 	    rm_out(outfile)
 	    sim_input = change_input(ref_input, gf)
             cmd = ["cyclus", "-o", outfile, "--input-file", sim_input]
-
+	    safe_call(cmd)
 	    # Cym processing stuff goes here
-
+	    print('something')
     return
-
 
