@@ -73,7 +73,7 @@
 	        <start>0</start>
 		<function>
 		  <type>linear</type>
-		  <params>0 10000</params>
+		  <params>GRUYERE</params>
 		</function>
 	      </piece>
 	    </piecewise_function>
