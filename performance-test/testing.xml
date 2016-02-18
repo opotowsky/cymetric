@@ -4,7 +4,7 @@
     <duration>2400</duration>
     <startmonth>1</startmonth>
     <startyear>2000</startyear>
-    <!-- <dt>86400</dt> -->
+    <dt>GORGONZOLA</dt>
     <decay>never</decay>
     <explicit_inventory>false</explicit_inventory>
     <explicit_inventory_compact>false</explicit_inventory_compact>
@@ -50,10 +50,10 @@
         <fuel_incommods>  <val>fresh_fuel</val> </fuel_incommods>
         <fuel_outcommods> <val>spent_fuel</val> </fuel_outcommods>
   
-        <cycle_time>9</cycle_time>
+        <cycle_time>GOUDA</cycle_time>
         <refuel_time>0</refuel_time>
-        <assem_size>14784</assem_size>
-        <n_assem_core>6</n_assem_core>
+        <assem_size>GRANDCRU</assem_size>
+        <n_assem_core>3</n_assem_core>
         <n_assem_batch>1</n_assem_batch>
         <power_cap>1000</power_cap>
       </Reactor>

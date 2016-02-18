@@ -4,7 +4,7 @@ import os
 import sqlite3
 import tables
 import numpy as np
-from tools import safe_call, rm_file, change_input
+from tools import safe_call, rm_file, change_input, fill_defaults
 
 def test_facilities():
     """
@@ -22,17 +22,17 @@ def test_facilities():
     searchfor="GRUYERE"
     for gf in growth_factors:
         for outfile in outfiles:
-	    rm_file(outfile)
-	    db = outfile.split(".sqlite")[0] + "_" + str(gf) + \
-	         ".sqlite"
-	    sim_input = change_input(ref_input, gf, searchfor)
-            cmd = ["cyclus", "-o", db, "--input-file", sim_input]
+            rm_file(outfile)
+            db = outfile.split(".sqlite")[0] + "_" + str(gf) + ".sqlite"
+            sim_input = change_input(ref_input, gf, searchfor)
+            full_input = fill_defaults(sim_input)
+            cmd = ["cyclus", "-o", db, "--input-file", full_input]
             safe_call(cmd)
-	    rm_file(sim_input)	    
+#            rm_file(full_input)      
 
-	    # Cym processing stuff goes here
-	    print('something')
-	    rm_file(db)
+            # Cym processing stuff goes here
+            print('something')
+            rm_file(db)
     return
 
 test_facilities()
