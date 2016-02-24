@@ -1,9 +1,10 @@
 """Tools for cymetric performance testing"""
 import os
 import subprocess
+from jinja2 import FileSystemLoader, Environment, Template
 
 def fill_defaults(ref_input):
-    """Fills in default values for unvarying input params.
+    """Fills in default values for non-varying input params.
 
     Args:
         ref_input: The path to the reference input file 
@@ -11,24 +12,16 @@ def fill_defaults(ref_input):
     Returns:
         A path to a file ready to run in a simulation.
     """
-    defaults = {'GRUYERE': '0 10000', 'GORGONZOLA': '2629846', 'GRANDCRU': '20000', 'GOUDA': '18'}
-
-    # File keeps same name as old file
-    new_sim = 'fullsim.sqlite'
-    sim = open(new_sim, "w")
-    ref = open(ref_input, "r")
-    
-    for key, param in defaults.iteritems():
-        for f in ref:
-            if key in f:
-                sim.write(f.replace(key, param))
-            else:
-                sim.write(f)    
-
-    # Closing open files
-    ref.close()
-    sim.close()
-
+    templateLoader = FileSystemLoader(searchpath="./")
+    templateEnv = Environment(loader=templateLoader)
+    defaults = {'growrate': '0 10000', 'dt': '2629846', 'assemsize': '20000', \
+                'cycletime': '18', 'outrecipe': 'three'}
+    ref = templateEnv.get_template(ref_input)
+    sim = ref.render(defaults=defaults)
+    new_sim = 'new_sim.xml'
+    sim_file = open(new_sim, "w")
+    for line in sim:
+        sim_file.write(line)
     return new_sim
 
 def change_input(ref_input, parameter, search_text):
@@ -57,7 +50,6 @@ def change_input(ref_input, parameter, search_text):
     # Closing open files
     ref.close()
     sim.close()
-
     return new_sim
 
 def rm_file(file_path):
