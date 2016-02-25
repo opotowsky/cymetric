@@ -3,9 +3,7 @@
     <duration>2400</duration>
     <startmonth>1</startmonth>
     <startyear>2000</startyear>
-    {% if 'dt' in defaults %}
     <dt>{{ defaults.get('dt') }}</dt>
-    {% endif %}
     <decay>never</decay>
     <explicit_inventory>false</explicit_inventory>
     <explicit_inventory_compact>false</explicit_inventory_compact>
@@ -48,19 +46,13 @@
       <Reactor>
         <fuel_inrecipes>  <val>fresh_fuel</val> </fuel_inrecipes>
         <fuel_outrecipes> 
-          {% if 'outrecipe' in defaults %}
           <val>{{ defaults.get('outrecipe') }}</val>
-          {% endif %}
         </fuel_outrecipes>
         <fuel_incommods>  <val>fresh_fuel</val> </fuel_incommods>
         <fuel_outcommods> <val>spent_fuel</val> </fuel_outcommods>
-        {% if 'cycletime' in defaults %}
         <cycle_time>{{ defaults.get('cycletime') }}</cycle_time>
-        {% endif %}
         <refuel_time>0</refuel_time>
-        {% if 'assemsize' in defaults %}
         <assem_size>{{ defaults.get('assemsize') }}</assem_size>
-        {% endif %}
         <n_assem_core>3</n_assem_core>
         <n_assem_batch>1</n_assem_batch>
         <power_cap>1000</power_cap>
@@ -81,9 +73,7 @@
 	        <start>0</start>
 		<function>
 		  <type>linear</type>
-          {% if 'growrate' in defaults %}
 		  <params>{{ defaults.get('growrate') }}</params>
-          {% endif %}
 		</function>
 	      </piece>
 	    </piecewise_function>
