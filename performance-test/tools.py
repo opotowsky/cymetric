@@ -19,8 +19,11 @@ def change_input(ref_input, value, parameter):
     defaults = {'growrate': '0 10000', 'dt': '2629846', 'assemsize': '20000', \
                 'cycletime': '18', 'outrecipe': 'three'}
     ref = templateEnv.get_template(ref_input)
+    # Update the defaults dict with the new value
     defaults[parameter]=value
+    # Insert the defaults into the xml template
     sim = ref.render(defaults=defaults)
+    # Save to a new file
     new_sim = ref_input.split(".xml")[0] + "_" + str(parameter) + ".xml"
     sim_file = open(new_sim, "w")
     for line in sim:
@@ -28,6 +31,15 @@ def change_input(ref_input, value, parameter):
     sim_file.close()
 
     return new_sim
+
+def cmd_out(cmd):
+    """
+    """
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+#    out = p.stdout.read()
+    out, err = p.communicate()
+#    retcode = p.wait()
+    return out
 
 def rm_file(file_path):
     """

@@ -4,7 +4,7 @@ import os
 import sqlite3
 import tables
 import numpy as np
-from tools import safe_call, rm_file, change_input, fill_defaults
+from tools import safe_call, rm_file, change_input, cmd_out
 
 def test_facilities():
     """
@@ -16,23 +16,26 @@ def test_facilities():
     ref_input = "./testing.xml"
     # Growth factors to change the number of facilities in each sim
     growth_factors = ["0 10000", "0.5 10000", "1 10000"]
+    key = 'growrate'
     # Output files
     #outfiles = ["output_temp.h5", "output_temp.sqlite"]
     outfiles = ["output_temp.sqlite"]
-    searchfor="GRUYERE"
+    times = []
     for gf in growth_factors:
         for outfile in outfiles:
             rm_file(outfile)
             db = outfile.split(".sqlite")[0] + "_" + str(gf) + ".sqlite"
-            sim_input = change_input(ref_input, gf, searchfor)
-            full_input = fill_defaults(sim_input)
-            cmd = ["cyclus", "-o", db, "--input-file", full_input]
+            sim_input = change_input(ref_input, gf, key)
+            cmd = ["cyclus", "-o", db, "--input-file", sim_input]
             safe_call(cmd)
-#            rm_file(full_input)      
-
-            # Cym processing stuff goes here
-            print('something')
+            rm_file(sim_input)      
+            # Get some info on cymetric processing time
+            get_time = ["time cymetric", db, "-e Agents[:]"]
+            time = cmd_out(get_time)
+            times.append(time)
             rm_file(db)
+    print times
     return
 
-test_facilities()
+if __name__ == "__main__":
+    test_facilities()
