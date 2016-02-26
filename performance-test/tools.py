@@ -1,6 +1,8 @@
 """Tools for cymetric performance testing"""
 import os
 import subprocess
+import time
+import timeit
 from jinja2 import FileSystemLoader, Environment, Template
 
 def change_input(ref_input, value, parameter):
@@ -32,14 +34,19 @@ def change_input(ref_input, value, parameter):
 
     return new_sim
 
-def cmd_out(cmd):
+def cym_time(cmd):
+    """Gives time for execution of a command
+
+    Args:
+        cmd: A command line
+
+    Returns:
+        A value of time in seconds of the command execution
     """
-    """
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-#    out = p.stdout.read()
-    out, err = p.communicate()
-#    retcode = p.wait()
-    return out
+    start_t = timeit.default_timer()
+    safe_call(cmd)
+    cym_time = (timeit.default_timer() - start_t)
+    return cym_time 
 
 def rm_file(file_path):
     """
@@ -51,7 +58,12 @@ def rm_file(file_path):
 
 def safe_call(cmd, shell=False, *args, **kwargs):
     """Checks that a command successfully runs with/without shell=True. 
-    Returns the process return code.
+
+    Args:
+        cmd: A command line 
+
+    Returns:
+        Returns the process return code.
     """
     try:
         rtn = subprocess.call(cmd, shell=False, *args, **kwargs)

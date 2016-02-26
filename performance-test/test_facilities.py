@@ -4,7 +4,7 @@ import os
 import sqlite3
 import tables
 import numpy as np
-from tools import safe_call, rm_file, change_input, cmd_out
+from tools import safe_call, rm_file, change_input, cym_time
 
 def test_facilities():
     """
@@ -15,7 +15,7 @@ def test_facilities():
     # Simulation input file for performance testing
     ref_input = "./testing.xml"
     # Growth factors to change the number of facilities in each sim
-    growth_factors = ["0 10000", "0.5 10000", "1 10000"]
+    growth_factors = ["0 10000", "10 10000", "100 10000"]
     key = 'growrate'
     # Output files
     #outfiles = ["output_temp.h5", "output_temp.sqlite"]
@@ -29,12 +29,14 @@ def test_facilities():
             cmd = ["cyclus", "-o", db, "--input-file", sim_input]
             safe_call(cmd)
             rm_file(sim_input)      
+            
             # Get some info on cymetric processing time
-            get_time = ["time cymetric", db, "-e Agents[:]"]
-            time = cmd_out(get_time)
+            cym_cmd = ["cymetric", db, "-e", "Agents[:]"]
+            time = cym_time(cym_cmd)
             times.append(time)
             rm_file(db)
-    print times
+    d = zip(growth_factors, times)
+    print d
     return
 
 if __name__ == "__main__":
