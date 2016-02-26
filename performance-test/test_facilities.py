@@ -16,25 +16,28 @@ def test_facilities():
     ref_input = "./testing.xml"
     # Growth factors to change the number of facilities in each sim
     growth_factors = ["0 10000", "10 10000", "100 10000"]
-    key = 'growrate'
+    # Key for defaults dict
+    key = "growrate"
     # Output files
     #outfiles = ["output_temp.h5", "output_temp.sqlite"]
     outfiles = ["output_temp.sqlite"]
+    # Decay, yes and no
+    decay = [False, True]
     times = []
     for gf in growth_factors:
         for outfile in outfiles:
-            rm_file(outfile)
-            db = outfile.split(".sqlite")[0] + "_" + str(gf) + ".sqlite"
-            sim_input = change_input(ref_input, gf, key)
-            cmd = ["cyclus", "-o", db, "--input-file", sim_input]
-            safe_call(cmd)
-            rm_file(sim_input)      
-            
-            # Get some info on cymetric processing time
-            cym_cmd = ["cymetric", db, "-e", "Agents[:]"]
-            time = cym_time(cym_cmd)
-            times.append(time)
-            rm_file(db)
+            for d in decay:
+                db = outfile.split(".sqlite")[0] + "_" + str(gf) + ".sqlite"
+                sim_input = change_input(ref_input, gf, key, d)
+                cmd = ["cyclus", "-o", db, "--input-file", sim_input]
+                safe_call(cmd)
+                rm_file(sim_input)      
+                
+                # Get some info on cymetric processing time
+                cym_cmd = ["cymetric", db, "-e", "Agents[:]"]
+                time = cym_time(cym_cmd)
+                times.append(time)
+                rm_file(db)
     d = zip(growth_factors, times)
     print d
     return

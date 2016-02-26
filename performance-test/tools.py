@@ -5,13 +5,14 @@ import time
 import timeit
 from jinja2 import FileSystemLoader, Environment, Template
 
-def change_input(ref_input, value, parameter):
+def change_input(ref_input, value, parameter, decay):
     """Changes a parameter in the input file.
 
     Args:
         ref_input: The path to the reference xml input file 
         value: A text value to be added into the xml template
         parameter: A text indicator in the template to replace a parameter
+        decay: A boolean indicator of whether or not to use decay.
 
     Returns:
         A path to a file with an updated input file parameter.
@@ -19,10 +20,13 @@ def change_input(ref_input, value, parameter):
     templateLoader = FileSystemLoader(searchpath="./")
     templateEnv = Environment(loader=templateLoader)
     defaults = {'growrate': '0 10000', 'dt': '2629846', 'assemsize': '20000', \
-                'cycletime': '18', 'outrecipe': 'three'}
+                'cycletime': '18', 'outrecipe': 'three', 'decay': 'never'}
     ref = templateEnv.get_template(ref_input)
     # Update the defaults dict with the new value
     defaults[parameter]=value
+    # Update decay if necessary
+    if decay == True:
+        defaults['decay']='lazy'
     # Insert the defaults into the xml template
     sim = ref.render(defaults=defaults)
     # Save to a new file

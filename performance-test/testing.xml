@@ -4,7 +4,7 @@
     <startmonth>1</startmonth>
     <startyear>2000</startyear>
     <dt>{{ defaults.get('dt') }}</dt>
-    <decay>never</decay>
+    <decay>{{ defaults.get('decay') }}</decay>
     <explicit_inventory>false</explicit_inventory>
     <explicit_inventory_compact>false</explicit_inventory_compact>
   </control>
