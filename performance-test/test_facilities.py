@@ -11,7 +11,6 @@ def test_facilities():
     Diff growth factors for otherwise equivalent sims to study
     effect of facility # on cymetric processing time
     """
-    
     # Simulation input file for performance testing
     ref_input = "./testing.xml"
     # Growth factors to change the number of facilities in each sim
@@ -23,21 +22,25 @@ def test_facilities():
     outfiles = ["output_temp.sqlite"]
     # Decay, yes and no
     decay = [False, True]
+    # Write to db, yes and no
+    dbwrite = ["--no-write", "--write"]
+
     times = []
     for gf in growth_factors:
         for outfile in outfiles:
             for d in decay:
-                db = outfile.split(".sqlite")[0] + "_" + str(gf) + ".sqlite"
-                sim_input = change_input(ref_input, gf, key, d)
-                cmd = ["cyclus", "-o", db, "--input-file", sim_input]
-                safe_call(cmd)
-                rm_file(sim_input)      
-                
-                # Get some info on cymetric processing time
-                cym_cmd = ["cymetric", db, "-e", "Agents[:]"]
-                time = cym_time(cym_cmd)
-                times.append(time)
-                rm_file(db)
+                for w in dbwrite:
+                    db = outfile.split(".sqlite")[0] + "_" + str(gf) + ".sqlite"
+                    sim_input = change_input(ref_input, gf, key, d)
+                    cmd = ["cyclus", "-o", db, "--input-file", sim_input]
+                    safe_call(cmd)
+                    rm_file(sim_input)      
+                    
+                    # Get some info on cymetric processing time
+                    cym_cmd = ["cymetric", db, w, "-e", "Agents[:]"]
+                    time = cym_time(cym_cmd)
+                    times.append(time)
+                    rm_file(db)
     d = zip(growth_factors, times)
     print d
     return
