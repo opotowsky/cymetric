@@ -19,8 +19,8 @@ def change_input(ref_input, value, parameter, decay):
     """
     templateLoader = FileSystemLoader(searchpath="./")
     templateEnv = Environment(loader=templateLoader)
-    defaults = {'growrate': '0 10000', 'dt': '2629846', 'assemsize': '20000', \
-                'cycletime': '18', 'outrecipe': 'three', 'decay': 'never'}
+    defaults = {'growrate': '0 10000', 'simdur': '2400', 'cycletime': '18', \
+                'outrecipe': 'three', 'decay': 'never'}
     ref = templateEnv.get_template(ref_input)
     # Update the defaults dict with the new value
     defaults[parameter]=value
@@ -47,10 +47,16 @@ def cym_time(cmd):
     Returns:
         A value of time in seconds of the command execution
     """
-    start_t = timeit.default_timer()
-    safe_call(cmd)
-    cym_time = (timeit.default_timer() - start_t)
+    # Since function we time has an argument, it must be wrapped for timeit
+    wrapped = wrapper(safe_call, cmd)
+    t = timeit.Timer(wrapped).repeat(repeat=3, number=2)
+    cym_time = min(t)
     return cym_time 
+
+def wrapper(func, *args, **kwargs):
+    def wrapped():
+        return func(*args, **kwargs)
+    return wrapped
 
 def rm_file(file_path):
     """

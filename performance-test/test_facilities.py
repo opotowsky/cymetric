@@ -39,10 +39,9 @@ def test_facilities():
                     # Get some info on cymetric processing time
                     cym_cmd = ["cymetric", db, w, "-e", "Agents[:]"]
                     time = cym_time(cym_cmd)
-                    times.append(time)
+                    times.append([gf, outfile, d, w, time])
                     rm_file(db)
-    d = zip(growth_factors, times)
-    print d
+    print times
     return
 
 if __name__ == "__main__":
