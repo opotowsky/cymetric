@@ -2,6 +2,7 @@
 import os
 import subprocess
 import time
+import csv
 import timeit
 from jinja2 import FileSystemLoader, Environment, Template
 
@@ -49,14 +50,31 @@ def cym_time(cmd):
     """
     # Since function we time has an argument, it must be wrapped for timeit
     wrapped = wrapper(safe_call, cmd)
-    t = timeit.Timer(wrapped).repeat(repeat=3, number=2)
+    t = timeit.Timer(wrapped).repeat(repeat=3, number=1)
     cym_time = min(t)
     return cym_time 
 
 def wrapper(func, *args, **kwargs):
+    """
+    Wraps a function and its arguments into a function without arguments.
+    """
     def wrapped():
         return func(*args, **kwargs)
     return wrapped
+
+def write_csv(filename, header, dictname):
+    """
+    csv
+    """
+    file_exists = os.path.isfile(filename)
+    csvfile = filename
+    with open(csvfile, 'a') as f:
+        writer = csv.DictWriter(f, delimiter=',', fieldnames=header)
+        if not file_exists:
+            writer.writeheader()
+        writer.writerow(dictname)
+
+    return csvfile
 
 def rm_file(file_path):
     """
