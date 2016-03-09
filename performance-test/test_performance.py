@@ -10,7 +10,7 @@ def test_facilities_initial(ref_input, outfile, decaybool, writeflag):
     """
     """
     # Two sets of input parameters to change the number of facilities in each sim
-    facnums = [["10", "0 10000"], ["100", "0 100000"], ["1000", "0 1000000"], ["10000", "0 10000000"]]
+    facnums = [["10", "0 10000"], ["100", "0 100000"]]#, ["1000", "0 1000000"], ["10000", "0 10000000"]]
     # Key for defaults dict
     keys= ["facnum", "growrate"]
     for num in facnums:
@@ -23,8 +23,10 @@ def test_facilities_initial(ref_input, outfile, decaybool, writeflag):
         # Get some info on cymetric processing time and save it to file
         cym_cmd = ["cymetric", db, writeflag, "-e", "Agents[:]"]
         time = cym_time(cym_cmd)
-        fachead = ['InitFacilityNum', 'Decay', 'WriteFlag', 'Time']
-        factime = {'InitFacilityNum':num, 'Decay':decaybool, 'WriteFlag':writeflag, 'Time':time}
+        size = os.path.getsize(db)
+        fachead = ['InitFacilityNum', 'Decay', 'WriteFlag', 'Time', 'DbSize']
+        factime = {'InitFacilityNum': num, 'Decay': decaybool, \
+                   'WriteFlag': writeflag, 'Time': time, 'DbSize': size}
         write_csv('initfacilitynum.csv', fachead, factime)    
         rm_file(db)
     return
@@ -48,8 +50,10 @@ def test_facilities_growth(ref_input, outfile, decaybool, writeflag):
         # Get some info on cymetric processing time and save it to file
         cym_cmd = ["cymetric", db, writeflag, "-e", "Agents[:]"]
         time = cym_time(cym_cmd)
-        fachead = ['GrowthFactor', 'Decay', 'WriteFlag', 'Time']
-        factime = {'GrowthFactor':gf, 'Decay':decaybool, 'WriteFlag':writeflag, 'Time':time}
+        size = os.path.getsize(db)
+        fachead = ['GrowthFactor', 'Decay', 'WriteFlag', 'Time', 'DbSize']
+        factime = {'GrowthFactor': gf, 'Decay': decaybool, 'WriteFlag': writeflag,\
+                   'Time': time, 'DbSize': size}
         write_csv('facilitynum.csv', fachead, factime)    
         rm_file(db)
     return
@@ -61,15 +65,17 @@ def main():
     #outfiles = ["output_temp.h5", "output_temp.sqlite"]
     outfiles = ["output_temp.sqlite"]
     # Decay: yes and no
-    decay = [False, True]
+    #decay = [False, True]
+    decay = [True]
     # Write to db: yes and no
     dbwrite = ["--no-write", "--write"]
 
     for outfile in outfiles:
         for d in decay:
             for w in dbwrite:
-                test_facilities_growth(ref_input, outfile, d, w)
+                #test_facilities_growth(ref_input, outfile, d, w)
                 test_facilities_initial(ref_input, outfile, d, w)
+                
 
     return
 
