@@ -6,13 +6,13 @@ import csv
 import timeit
 from jinja2 import FileSystemLoader, Environment, Template
 
-def change_input(ref_input, value, parameter, decay):
+def change_input(ref_input, values, parameters, decay):
     """Changes a parameter in the input file.
 
     Args:
         ref_input: The path to the reference xml input file 
-        value: A text value to be added into the xml template
-        parameter: A text indicator in the template to replace a parameter
+        value: A list of text values to be added into the xml template
+        parameter: A list of text indicators in the template to replace a parameter
         decay: A boolean indicator of whether or not to use decay.
 
     Returns:
@@ -21,17 +21,18 @@ def change_input(ref_input, value, parameter, decay):
     templateLoader = FileSystemLoader(searchpath="./")
     templateEnv = Environment(loader=templateLoader)
     defaults = {'growrate': '0 10000', 'simdur': '2400', 'cycletime': '18', \
-                'outrecipe': 'three', 'decay': 'never'}
+                'outrecipe': 'three', 'decay': 'never', 'facnum': '10'}
     ref = templateEnv.get_template(ref_input)
-    # Update the defaults dict with the new value
-    defaults[parameter]=value
+    # Update the defaults dict with the new value(s)
+    for p, v in zip(parameters, values):
+        defaults[p]=v
     # Update decay if necessary
     if decay == True:
         defaults['decay']='lazy'
     # Insert the defaults into the xml template
     sim = ref.render(defaults=defaults)
     # Save to a new file
-    new_sim = ref_input.split(".xml")[0] + "_" + str(parameter) + ".xml"
+    new_sim = ref_input.split(".xml")[0] + "_" + str(parameters) + ".xml"
     sim_file = open(new_sim, "w")
     for line in sim:
         sim_file.write(line)
