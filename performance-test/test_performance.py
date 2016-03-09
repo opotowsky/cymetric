@@ -6,16 +6,38 @@ import tables
 import numpy as np
 from tools import safe_call, rm_file, change_input, cym_time, write_csv
 
-def test_facilities(ref_input, outfile, decaybool, writeflag):
+def test_facilities_initial(ref_input, outfile, decaybool, writeflag):
+    """
+    """
+    # Two sets of input parameters to change the number of facilities in each sim
+    facnums = [["10", "0 10000"], ["100", "0 100000"], ["1000", "0 1000000"], ["10000", "0 10000000"]]
+    # Key for defaults dict
+    keys= ["facnum", "growrate"]
+    for num in facnums:
+        db = outfile.split(".sqlite")[0] + "_" + str(num) + ".sqlite"
+        sim_input = change_input(ref_input, num, keys, decaybool)
+        cmd = ["cyclus", "-o", db, "--input-file", sim_input]
+        safe_call(cmd)
+        rm_file(sim_input)      
+        
+        # Get some info on cymetric processing time and save it to file
+        cym_cmd = ["cymetric", db, writeflag, "-e", "Agents[:]"]
+        time = cym_time(cym_cmd)
+        fachead = ['InitFacilityNum', 'Decay', 'WriteFlag', 'Time']
+        factime = {'InitFacilityNum':num, 'Decay':decaybool, 'WriteFlag':writeflag, 'Time':time}
+        write_csv('initfacilitynum.csv', fachead, factime)    
+        rm_file(db)
+    return
+
+def test_facilities_growth(ref_input, outfile, decaybool, writeflag):
     """
     Diff growth factors for otherwise equivalent sims to study
     effect of facility # on cymetric processing time
     """
     # Growth factors to change the number of facilities in each sim
-    growth_factors = ["0 10000", "10 10000", "100 10000"]
+    growth_factors = [["0 10000"], ["10 10000"], ["100 10000"], ["1000 10000"], ["10000 10000"]]
     # Key for defaults dict
-    key = "growrate"
-    times = []
+    key = ["growrate"]
     for gf in growth_factors:
         db = outfile.split(".sqlite")[0] + "_" + str(gf) + ".sqlite"
         sim_input = change_input(ref_input, gf, key, decaybool)
@@ -23,15 +45,14 @@ def test_facilities(ref_input, outfile, decaybool, writeflag):
         safe_call(cmd)
         rm_file(sim_input)      
         
-        # Get some info on cymetric processing time
+        # Get some info on cymetric processing time and save it to file
         cym_cmd = ["cymetric", db, writeflag, "-e", "Agents[:]"]
         time = cym_time(cym_cmd)
-#        times.append([gf, decaybool, writeflag, time])
         fachead = ['GrowthFactor', 'Decay', 'WriteFlag', 'Time']
         factime = {'GrowthFactor':gf, 'Decay':decaybool, 'WriteFlag':writeflag, 'Time':time}
         write_csv('facilitynum.csv', fachead, factime)    
         rm_file(db)
-    return times
+    return
 
 def main():
     # Simulation input file for performance testing
@@ -47,7 +68,8 @@ def main():
     for outfile in outfiles:
         for d in decay:
             for w in dbwrite:
-                test_facilities(ref_input, outfile, d, w)
+                test_facilities_growth(ref_input, outfile, d, w)
+                test_facilities_initial(ref_input, outfile, d, w)
 
     return
 
