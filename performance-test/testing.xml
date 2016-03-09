@@ -89,7 +89,7 @@
         </entry>
         <entry>
 	  <prototype>lw_reactor</prototype>
-	  <number>10</number>
+	  <number>{{ defaults.get('facnum') }}</number>
         </entry>
         <entry>
           <prototype>fuel_sink</prototype>
