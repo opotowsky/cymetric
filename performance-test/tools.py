@@ -6,6 +6,29 @@ import csv
 import timeit
 from jinja2 import FileSystemLoader, Environment, Template
 
+def run_test(ref_input, outfile, decaybool, writeflag, params, keys, table, colname):
+    """
+    """
+    for param in params:
+        db = outfile.split(".sqlite")[0] + "_" + str(keys[0]) + "_" + str(param) + ".sqlite"
+        sim_input = change_input(ref_input, param, keys, decaybool)
+        cmd = ["cyclus", "-o", db, "--input-file", sim_input]
+        safe_call(cmd)
+        rm_file(sim_input)      
+
+        # Get some info on cymetric processing time and save it to file
+        cym_cmd = ["cymetric", db, writeflag, "-e", table]
+        time = cym_time(cym_cmd)
+        size = os.path.getsize(db)
+        head = [colname, 'Decay', 'WriteFlag', 'Time', 'DbSize']
+        data = {colname: param, 'Decay': decaybool, \
+                   'WriteFlag': writeflag, 'Time': time, 'DbSize': size}
+        write_csv(colname + '.csv', head, data)    
+        rm_file(db)
+
+    return
+
+
 def change_input(ref_input, values, parameters, decay):
     """Changes a parameter in the input file.
 
@@ -51,7 +74,7 @@ def cym_time(cmd):
     """
     # Since function we time has an argument, it must be wrapped for timeit
     wrapped = wrapper(safe_call, cmd)
-    t = timeit.Timer(wrapped).repeat(repeat=3, number=1)
+    t = timeit.Timer(wrapped).repeat(repeat=3, number=10)
     cym_time = min(t)
     return cym_time 
 
