@@ -4,33 +4,22 @@ import os
 import sqlite3
 import tables
 import numpy as np
-from tools import safe_call, rm_file, change_input, cym_time, write_csv, run_test
+from tools import safe_call, rm_file, change_input, cym_time, write_csv
 
-def test_timestep(ref_input, outfile, decaybool, writeflag):
+def test_timestep():
     """
     """
     # Set of input parameters to change the simulation duration
-    params = [["2400"], ["10000"], ["100000"], ["1000000"], ["5000000"]]
+    #params = [["2400"], ["10000"], ["100000"], ["1000000"], ["5000000"]]
+    params = [["2400"], ["10000"]]
     # Key for defaults dict
     keys= ["simdur"]
     table = "Transactions[:]"
     colname = "TimestepDur"
-    run_test(ref_input, outfile, decaybool, writeflag, params, keys, table, colname)
+    run_test(params, keys, table, colname)
     return
 
-def test_timestep(ref_input, outfile, decaybool, writeflag):
-    """
-    """
-    # Set of input parameters to change the simulation duration
-    params = [["2400"], ["10000"], ["100000"], ["1000000"], ["5000000"]]
-    # Key for defaults dict
-    keys= ["simdur"]
-    table = "Transactions[:]"
-    colname = "TimestepDur"
-    run_test(ref_input, outfile, decaybool, writeflag, params, keys, table, colname)
-    return
-
-def test_facilities_initial(ref_input, outfile, decaybool, writeflag):
+def test_facilities_initial():
     """
     """
     # Two sets of input parameters to change the number of facilities in each sim
@@ -39,10 +28,10 @@ def test_facilities_initial(ref_input, outfile, decaybool, writeflag):
     keys= ["facnum", "growrate"]
     table = "Agents[:]"
     colname = "InitFacilityNum"
-    run_test(ref_input, outfile, decaybool, writeflag, params, keys, table, colname)
+    run_test(params, keys, table, colname)
     return
 
-def test_facilities_growth(ref_input, outfile, decaybool, writeflag):
+def test_facilities_growth():
     """
     Diff growth factors for otherwise equivalent sims to study
     effect of facility # on cymetric processing time
@@ -53,10 +42,12 @@ def test_facilities_growth(ref_input, outfile, decaybool, writeflag):
     keys = ["growrate"]
     table = "Agents[:]"
     colname = "GrowthFactor"
-    run_test(ref_input, outfile, decaybool, writeflag, params, keys, table, colname)
+    run_test(params, keys, table, colname)
     return
 
-def main():
+def run_test(params, keys, table, colname):
+    """
+    """
     # Simulation input file for performance testing
     ref_input = "./testing.xml"
     # Output files
@@ -64,16 +55,32 @@ def main():
     outfiles = ["output_temp.sqlite"]
     # Decay: yes and no
     decay = [False, True]
-    # Write to db: yes and no
-    dbwrite = ["--no-write", "--write"]
-
     for outfile in outfiles:
-        for d in decay:
-            for w in dbwrite:
-                #test_facilities_growth(ref_input, outfile, d, w)
-                #test_facilities_initial(ref_input, outfile, d, w)
-                test_timestep(ref_input, outfile, d, w)
+        for param in params:
+            for d in decay:
+                db = outfile.split(".sqlite")[0] + "_" + str(keys[0]) + "_" + str(param) + ".sqlite"
+                sim_input = change_input(ref_input, param, keys, d)
+                cmd = ["cyclus", "-o", db, "--input-file", sim_input]
+                safe_call(cmd)
+    
+                # Get some info on cymetric processing time and save it to file
+                dbwrite = ["--no-write", "--write"]
+                for w in dbwrite:
+                    cym_cmd = ["cymetric", db, w, "-e", table]
+                    time = cym_time(cym_cmd)
+                    size = os.path.getsize(db)
+                    head = [colname, 'Decay', 'WriteFlag', 'Time', 'DbSize']
+                    data = {colname: param, 'Decay': d,'WriteFlag': w, \
+                            'Time': time, 'DbSize': size}
+                    write_csv(colname + '.csv', head, data)    
+                rm_file(sim_input)      
+                rm_file(db)
+    return
 
+def main():
+    #test_facilities_growth()
+    #test_facilities_initial()
+    test_timestep()
     return
 
 if __name__ == "__main__":

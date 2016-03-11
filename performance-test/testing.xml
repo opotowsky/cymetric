@@ -230,4 +230,31 @@
     <nuclide> <id>Nd146</id> <comp>0.005102</comp> </nuclide>
     <nuclide> <id>Cs137</id> <comp>0.0521</comp> </nuclide>
   </recipe>
+  <recipe>
+    <name>nea_spent_uox</name>
+    <basis>mass</basis>
+    <nuclide> <id>92232</id> <comp>2.78e-07</comp> </nuclide>
+    <nuclide> <id>92233</id> <comp>3.08e-07</comp> </nuclide>
+    <nuclide> <id>92234</id> <comp>0.0175</comp> </nuclide>
+    <nuclide> <id>92235</id> <comp>0.756</comp> </nuclide>
+    <nuclide> <id>92236</id> <comp>0.687</comp> </nuclide>
+    <nuclide> <id>92238</id> <comp>90.9</comp> </nuclide>
+    <nuclide> <id>94236</id> <comp>6.53e-08</comp> </nuclide>
+    <nuclide> <id>94238</id> <comp>0.0511</comp> </nuclide>
+    <nuclide> <id>94239</id> <comp>0.637</comp> </nuclide>
+    <nuclide> <id>94240</id> <comp>0.311</comp> </nuclide>
+    <nuclide> <id>94241</id> <comp>0.153</comp> </nuclide>
+    <nuclide> <id>94242</id> <comp>0.112</comp> </nuclide>
+    <nuclide> <id>95241</id> <comp>0.0505</comp> </nuclide>
+    <nuclide> <id>95243</id> <comp>0.0294</comp> </nuclide>
+    <nuclide> <id>93237</id> <comp>0.0916</comp> </nuclide>
+    <nuclide> <id>93239</id> <comp>2.52e-08</comp> </nuclide>
+    <nuclide> <id>96242</id> <comp>1.89e-06</comp> </nuclide>
+    <nuclide> <id>96243</id> <comp>0.000189</comp> </nuclide>
+    <nuclide> <id>96244</id> <comp>0.0121</comp> </nuclide>
+    <nuclide> <id>96245</id> <comp>0.00105</comp> </nuclide>
+    <nuclide> <id>96246</id> <comp>0.000146</comp> </nuclide>
+    <nuclide> <id>96247</id> <comp>2.87e-06</comp> </nuclide>
+    <nuclide> <id>96248</id> <comp>4.9e-07</comp> </nuclide>
+  </recipe>
 </simulation>
