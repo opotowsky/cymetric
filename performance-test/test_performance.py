@@ -1,20 +1,18 @@
 #! /usr/bin/env python
 
 import os
-import sqlite3
 import tables
 import numpy as np
-from tools import safe_call, rm_file, change_input, cym_time, write_csv
+from tools import safe_call, rm_file, change_input, cym_time, write_csv, table_count
 
 def test_timestep():
     """
     """
     # Set of input parameters to change the simulation duration
-    #params = [["2400"], ["10000"], ["100000"], ["1000000"], ["5000000"]]
-    params = [["2400"], ["10000"]]
+    params = [["2400"], ["10000"], ["50000"], ["100000"], ["40000"], ["70000"], ["1000000"], ["2500000"], ["5000000"]]
     # Key for defaults dict
     keys= ["simdur"]
-    table = "Transactions[:]"
+    table = "TransactionQuantity[:]"
     colname = "TimestepDur"
     run_test(params, keys, table, colname)
     return
@@ -23,10 +21,10 @@ def test_facilities_initial():
     """
     """
     # Two sets of input parameters to change the number of facilities in each sim
-    params = [["10", "0 10000"], ["100", "0 100000"], ["1000", "0 1000000"], ["10000", "0 10000000"]]
+    params = [["10", "0 10000"], ["100", "0 100000"], ["1000", "0 1000000"], ["5000", "0 5000000"], ["10000", "0 10000000"], ["30000", "0 30000000"]]
     # Key for defaults dict
     keys= ["facnum", "growrate"]
-    table = "Agents[:]"
+    table = "TransactionQuantity[:]"
     colname = "InitFacilityNum"
     run_test(params, keys, table, colname)
     return
@@ -37,10 +35,10 @@ def test_facilities_growth():
     effect of facility # on cymetric processing time
     """
     # Growth factors to change the number of facilities in each sim
-    params = [["0 10000"], ["10 10000"], ["100 10000"], ["1000 10000"], ["10000 10000"]]
+    params = [["0 10000"], ["10 10000"], ["100 10000"], ["1000 10000"], ["5000 10000"], ["10000 10000"]]
     # Key for defaults dict
     keys = ["growrate"]
-    table = "Agents[:]"
+    table = "TransactionQuantity[:]"
     colname = "GrowthFactor"
     run_test(params, keys, table, colname)
     return
@@ -54,7 +52,8 @@ def run_test(params, keys, table, colname):
     #outfiles = ["output_temp.h5", "output_temp.sqlite"]
     outfiles = ["output_temp.sqlite"]
     # Decay: yes and no
-    decay = [False, True]
+    #decay = [False, True]
+    decay = [False]
     for outfile in outfiles:
         for param in params:
             for d in decay:
@@ -69,17 +68,21 @@ def run_test(params, keys, table, colname):
                     cym_cmd = ["cymetric", db, w, "-e", table]
                     time = cym_time(cym_cmd)
                     size = os.path.getsize(db)
-                    head = [colname, 'Decay', 'WriteFlag', 'Time', 'DbSize']
+                    if w == "--write":
+                        table_size = table_count(db, table)
+                    else:
+                        table_size = None 
+                    head = [colname, 'Decay', 'WriteFlag', 'Time', 'DbSize', 'TbSize']
                     data = {colname: param, 'Decay': d,'WriteFlag': w, \
-                            'Time': time, 'DbSize': size}
-                    write_csv(colname + '.csv', head, data)    
+                            'Time': time, 'DbSize': size, 'TbSize': table_size}
+                    write_csv(colname + '.csv', head, data)
                 rm_file(sim_input)      
                 rm_file(db)
     return
 
 def main():
-    #test_facilities_growth()
-    #test_facilities_initial()
+    test_facilities_growth()
+    test_facilities_initial()
     test_timestep()
     return
 

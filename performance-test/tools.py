@@ -4,6 +4,7 @@ import subprocess
 import time
 import csv
 import timeit
+import sqlite3
 from jinja2 import FileSystemLoader, Environment, Template
 
 def change_input(ref_input, values, parameters, decay):
@@ -76,6 +77,19 @@ def write_csv(filename, header, dictname):
         writer.writerow(dictname)
 
     return csvfile
+
+def table_count(db, table):
+    """
+    Get number of rows in table
+    """
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+    c.execute('SELECT COUNT(*) FROM ' + table)
+    info = c.fetchall()
+    rows = info[0][0]
+    conn.close()
+                    
+    return rows
 
 def rm_file(file_path):
     """
