@@ -9,7 +9,7 @@ def test_timestep():
     """
     """
     # Set of input parameters to change the simulation duration
-    params = [["2400"], ["10000"], ["50000"], ["100000"], ["40000"], ["70000"], ["1000000"], ["2500000"], ["5000000"]]
+    params = [["2400"], ["5000"], ["10000"], ["50000"], ["100000"], ["500000"]]
     # Key for defaults dict
     keys= ["simdur"]
     table = "TransactionQuantity[:]"
@@ -21,7 +21,7 @@ def test_facilities_initial():
     """
     """
     # Two sets of input parameters to change the number of facilities in each sim
-    params = [["10", "0 10000"], ["100", "0 100000"], ["1000", "0 1000000"], ["5000", "0 5000000"], ["10000", "0 10000000"], ["30000", "0 30000000"]]
+    params = [["10", "0 10000"], ["100", "0 100000"], ["1000", "0 1000000"], ["5000", "0 5000000"]]
     # Key for defaults dict
     keys= ["facnum", "growrate"]
     table = "TransactionQuantity[:]"
@@ -35,7 +35,7 @@ def test_facilities_growth():
     effect of facility # on cymetric processing time
     """
     # Growth factors to change the number of facilities in each sim
-    params = [["0 10000"], ["10 10000"], ["100 10000"], ["1000 10000"], ["5000 10000"], ["10000 10000"]]
+    params = [["0 10000"], ["10 10000"], ["100 10000"], ["1000 10000"], ["5000 10000"]]
     # Key for defaults dict
     keys = ["growrate"]
     table = "TransactionQuantity[:]"
@@ -51,14 +51,13 @@ def run_test(params, keys, table, colname):
     # Output files
     #outfiles = ["output_temp.h5", "output_temp.sqlite"]
     outfiles = ["output_temp.sqlite"]
-    # Decay: yes and no
-    #decay = [False, True]
-    decay = [False]
+    # Nucs tracked
+    nucs = ['three', 'eight', 'nea_spent_uox']
     for outfile in outfiles:
         for param in params:
-            for d in decay:
+            for n in nucs:
                 db = outfile.split(".sqlite")[0] + "_" + str(keys[0]) + "_" + str(param) + ".sqlite"
-                sim_input = change_input(ref_input, param, keys, d)
+                sim_input = change_input(ref_input, param, keys, n)
                 cmd = ["cyclus", "-o", db, "--input-file", sim_input]
                 safe_call(cmd)
     
@@ -72,8 +71,8 @@ def run_test(params, keys, table, colname):
                         table_size = table_count(db, table)
                     else:
                         table_size = None 
-                    head = [colname, 'Decay', 'WriteFlag', 'Time', 'DbSize', 'TbSize']
-                    data = {colname: param, 'Decay': d,'WriteFlag': w, \
+                    head = [colname, 'NucsTracked', 'WriteFlag', 'Time', 'DbSize', 'TbSize']
+                    data = {colname: param, 'NucsTracked': n,'WriteFlag': w, \
                             'Time': time, 'DbSize': size, 'TbSize': table_size}
                     write_csv(colname + '.csv', head, data)
                 rm_file(sim_input)      

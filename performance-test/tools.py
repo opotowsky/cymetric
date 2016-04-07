@@ -7,7 +7,7 @@ import timeit
 import sqlite3
 from jinja2 import FileSystemLoader, Environment, Template
 
-def change_input(ref_input, values, parameters, decay):
+def change_input(ref_input, values, parameters, nucs):
     """Changes a parameter in the input file.
 
     Args:
@@ -26,10 +26,13 @@ def change_input(ref_input, values, parameters, decay):
     ref = templateEnv.get_template(ref_input)
     # Update the defaults dict with the new value(s)
     for p, v in zip(parameters, values):
-        defaults[p]=v
+        defaults[p] = v
     # Update decay if necessary
-    if decay == True:
-        defaults['decay']='lazy'
+#    if decay == True:
+#        defaults['decay']='lazy'
+    # Update nuclides tracked if necessary
+    if nucs != 'three':
+        defaults['outrecipe'] = nucs
     # Insert the defaults into the xml template
     sim = ref.render(defaults=defaults)
     # Save to a new file
@@ -52,7 +55,7 @@ def cym_time(cmd):
     """
     # Since function we time has an argument, it must be wrapped for timeit
     wrapped = wrapper(safe_call, cmd)
-    t = timeit.Timer(wrapped).repeat(repeat=3, number=10)
+    t = timeit.Timer(wrapped).repeat(repeat=5, number=1)
     cym_time = min(t)
     return cym_time 
 
