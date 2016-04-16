@@ -7,14 +7,15 @@ import timeit
 import sqlite3
 from jinja2 import FileSystemLoader, Environment, Template
 
-def change_input(ref_input, values, parameters, nucs):
+def change_input(ref_input, values, parameters, nucs, inv):
     """Changes a parameter in the input file.
 
     Args:
         ref_input: The path to the reference xml input file 
         value: A list of text values to be added into the xml template
         parameter: A list of text indicators in the template to replace a parameter
-        decay: A boolean indicator of whether or not to use decay.
+        nucs: A text entry to indicate how many nuclides are being tracked in the sim
+        inv: A text entry to indicate whether or not to store an inventory table
 
     Returns:
         A path to a file with an updated input file parameter.
@@ -22,17 +23,20 @@ def change_input(ref_input, values, parameters, nucs):
     templateLoader = FileSystemLoader(searchpath="./")
     templateEnv = Environment(loader=templateLoader)
     defaults = {'growrate': '0 10000', 'simdur': '2400', 'cycletime': '18', \
-                'outrecipe': 'three', 'decay': 'never', 'facnum': '10'}
+                'outrecipe': 'three', 'decay': 'never', 'facnum': '10', \
+                'expinv': 'false', 'expinv_compact': 'false'}
     ref = templateEnv.get_template(ref_input)
     # Update the defaults dict with the new value(s)
     for p, v in zip(parameters, values):
         defaults[p] = v
-    # Update decay if necessary
-#    if decay == True:
-#        defaults['decay']='lazy'
     # Update nuclides tracked if necessary
     if nucs != 'three':
         defaults['outrecipe'] = nucs
+    # Store correct inv table
+    if inv == 'inv':
+        defaults['expinv'] = 'true'
+    elif inv == 'inv_compact':
+        defaults['expinv_compact'] = 'true'
     # Insert the defaults into the xml template
     sim = ref.render(defaults=defaults)
     # Save to a new file

@@ -4,13 +4,14 @@
     <startmonth>1</startmonth>
     <startyear>2000</startyear>
     <decay>{{ defaults.get('decay') }}</decay>
-    <explicit_inventory>false</explicit_inventory>
-    <explicit_inventory_compact>false</explicit_inventory_compact>
+    <explicit_inventory>{{ defaults.get('expinv') }}</explicit_inventory>
+    <explicit_inventory_compact>{{ defaults.get('expinv_compact') }}</explicit_inventory_compact>
   </control>
 
   <archetypes>
-    <spec> <lib>cycamore</lib> <name>GrowthRegion</name> </spec>
-    <spec> <lib>cycamore</lib> <name>ManagerInst</name> </spec>
+    <spec> <lib>agents</lib> <name>NullRegion</name> </spec>
+    <spec> <lib>agents</lib> <name>NullInst</name> </spec>
+    <spec> <lib>cycamore</lib> <name>DeployInst</name> </spec>
     <spec> <lib>cycamore</lib> <name>Source</name> </spec>
     <spec> <lib>cycamore</lib> <name>Sink</name> </spec>
     <spec> <lib>cycamore</lib> <name>Reactor</name> </spec>
@@ -61,50 +62,42 @@
 
 
   <region>
-    <name>GrowthRegion</name>
-    <config>
-      <GrowthRegion>
-        <growth>
-	  <item>
-	    <commod>power</commod>
-	    <piecewise_function>
-	      <piece>
-	        <start>0</start>
-		<function>
-		  <type>linear</type>
-		  <params>{{ defaults.get('growrate') }}</params>
-		</function>
-	      </piece>
-	    </piecewise_function>
-	  </item>
-	</growth>
-      </GrowthRegion>
-    </config>
+    <name>NullRegion</name>
+    <config><NullRegion/></config>
     <institution>
-      <name>ManagerInstitution</name>
-      <initialfacilitylist>
-        <entry>
-	  <prototype>fuel_source</prototype>
-	  <number>1</number>
-        </entry>
-        <entry>
-	  <prototype>lw_reactor</prototype>
-	  <number>{{ defaults.get('facnum') }}</number>
-        </entry>
-        <entry>
-          <prototype>fuel_sink</prototype>
-	  <number>1</number>
-        </entry>
-      </initialfacilitylist>
-      <config>
-        <ManagerInst>
-	  <prototypes>
-	    <val>fuel_source</val>
-	    <val>lw_reactor</val>
-	    <val>fuel_sink</val>
-	  </prototypes>
-	</ManagerInst>
-      </config>
+      <name>DeployInst</name>
+        <initialfacilitylist>
+          <entry>
+            <prototype>fuel_source</prototype>
+            <number>1</number>
+          </entry>
+          <entry>
+            <prototype>fuel_sink</prototype>
+            <number>1</number>
+          </entry>
+          <entry>
+            <prototype>lw_reactor</prototype>
+            <number>{{ defaults.get('facnum') }}</number>
+          </entry>
+        </initialfacilitylist>
+        <config><NullInst/></config>
+<!--        <config>
+          <DeployInst>
+            <prototypes>
+              <val>lw_reactor</val>
+            </prototypes>
+            <build_times>
+              <val></val>
+              <val></val>
+              <val></val>
+            </build_times>
+            <n_build>
+              <val></val>
+              <val></val>
+              <val></val>
+            </n_build>
+	      </DeployInst>
+        </config> -->
     </institution>
   </region>
 
