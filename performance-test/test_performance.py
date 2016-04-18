@@ -68,7 +68,7 @@ def run_test(params, keys, table, colname):
     return
 
 def main():
-    test_facilities_initial()
+    #test_facilities_initial()
     test_timestep()
     return
 
