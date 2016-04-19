@@ -13,7 +13,7 @@ def test_timestep():
     # Key for defaults dict
     keys= ["simdur"]
     table = "TransactionQuantity[:]"
-    colname = "TimestepDur"
+    colname = "SimDur"
     run_test(params, keys, table, colname)
     return
 
