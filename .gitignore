@@ -1,6 +1,7 @@
 *.sw*
 *-journal
 *.pyc
+performance-test/*.pyc
 build
 docs/_build
 tests/*.h5
