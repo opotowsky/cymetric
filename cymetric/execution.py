@@ -173,7 +173,10 @@ class ExecutionContext(MutableMapping):
         elif key in METRIC_REGISTRY:
             self._ctx[key] = MetricProxy(key, self.evaler)
         elif key not in self._ctx:
-            self._ctx[key] = ColumnProxy(key)
+            try:
+                self._ctx[key] = ColumnProxy(key)
+            except ValueError:
+                print('This name is not recognized as a metric:', metric)
         return self._ctx[key]
 
     def __setitem__(self, key, value):
