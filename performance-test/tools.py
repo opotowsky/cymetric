@@ -6,6 +6,7 @@ import csv
 import timeit
 import sqlite3
 from jinja2 import FileSystemLoader, Environment, Template
+from timeout import timeout
 
 def change_input(ref_input, values, parameters, nucs, inv):
     """Changes a parameter in the input file.
@@ -48,6 +49,7 @@ def change_input(ref_input, values, parameters, nucs, inv):
 
     return new_sim
 
+@timeout
 def cym_time(cmd):
     """Gives time for execution of a command
 
