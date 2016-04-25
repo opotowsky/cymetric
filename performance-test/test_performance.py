@@ -9,27 +9,25 @@ def test_timestep():
     """
     """
     # Set of input parameters to change the simulation duration
-    params = [["2400"], ["5000"], ["10000"], ["50000"], ["100000"], ["500000"]]
+    params = [["2400"], ["5000"], ["10000"], ["50000"]]
     # Key for defaults dict
     keys= ["simdur"]
-    table = "TransactionQuantity[:]"
     colname = "SimDur"
-    run_test(params, keys, table, colname)
+    run_test(params, keys, colname)
     return
 
 def test_facilities_initial():
     """
     """
     # Two sets of input parameters to change the number of facilities in each sim
-    params = [["10"], ["100"], ["1000"], ["2000"], ["5000"]]
+    params = [["10"], ["100"], ["1000"], ["2000"]]
     # Key for defaults dict
     keys= ["facnum"]
-    table = "TransactionQuantity[:]"
     colname = "InitFacilityNum"
-    run_test(params, keys, table, colname)
+    run_test(params, keys, colname)
     return
 
-def run_test(params, keys, table, colname):
+def run_test(params, keys, colname):
     """
     """
     # Simulation input file for performance testing
@@ -40,6 +38,8 @@ def run_test(params, keys, table, colname):
     nucs = ['three', 'eight', 'nea_spent_uox']
     # Inventory tables
     inv = ['none', 'inv', 'inv_compact']
+    # Tables to evaluate
+    tables = ["TransactionQuantity[:]", "BigJoin[:]", "BigJoin[NucId==942390000]"]
     for db in outfiles:
         for param in params:
             for i in inv:
@@ -52,23 +52,29 @@ def run_test(params, keys, table, colname):
                     dbwrite = ["--no-write", "--write"]
                     dbtype = db.replace('output_temp.', '')
                     for w in dbwrite:
-                        cym_cmd = ["cymetric", db, w, "-e", table]
-                        time = cym_time(cym_cmd)
-                        size = os.path.getsize(db)
-                        if w == "--write" and dbtype == 'sqlite':
-                            table_size = table_count(db, table)
-                        else:
-                            table_size = None 
-                        head = [colname, 'DbType', 'Inventory', 'NucsTracked', 'WriteFlag', 'Time', 'DbSize', 'TbSize']
-                        data = {colname: param, 'DbType': dbtype, 'Inventory': i, 'NucsTracked': n,'WriteFlag': w, \
-                                'Time': time, 'DbSize': size, 'TbSize': table_size}
-                        write_csv(colname + '.csv', head, data)
+                        for table in tables:
+                            cym_cmd = ["cymetric", db, w, "-e", table]
+                            time = cym_time(cym_cmd)
+                            size = os.path.getsize(db)
+                            if w == "--write" and dbtype == 'sqlite':
+                                table_size = table_count(db, table)
+                            else:
+                                table_size = None 
+                            head = [colname, 'DbType', 'TableEval', 'Inventory', \
+                                    'NucsTracked', 'WriteFlag', 'Time', 'DbSize', \
+                                    'TbSize']
+                            data = {colname: param[0], 'DbType': dbtype, \
+                                    'TableEval': table, 'Inventory': i, \
+                                    'NucsTracked': n,'WriteFlag': w, \
+                                    'Time': time, 'DbSize': size, \
+                                    'TbSize': table_size}
+                            write_csv(colname + '.csv', head, data)
                     rm_file(sim_input)      
                     rm_file(db)
     return
 
 def main():
-    #test_facilities_initial()
+    test_facilities_initial()
     test_timestep()
     return
 

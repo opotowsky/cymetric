@@ -23,9 +23,9 @@ def change_input(ref_input, values, parameters, nucs, inv):
     """
     templateLoader = FileSystemLoader(searchpath="./")
     templateEnv = Environment(loader=templateLoader)
-    defaults = {'growrate': '0 10000', 'simdur': '2400', 'cycletime': '18', \
-                'outrecipe': 'three', 'decay': 'never', 'facnum': '10', \
-                'expinv': 'false', 'expinv_compact': 'false'}
+    defaults = {'simdur': '2400', 'cycletime': '18', 'outrecipe': 'three', \
+                'decay': 'never', 'facnum': '10', 'expinv': 'false', \
+                'expinv_compact': 'false'}
     ref = templateEnv.get_template(ref_input)
     # Update the defaults dict with the new value(s)
     for p, v in zip(parameters, values):
@@ -49,7 +49,7 @@ def change_input(ref_input, values, parameters, nucs, inv):
 
     return new_sim
 
-@timeout
+#@timeout
 def cym_time(cmd):
     """Gives time for execution of a command
 
