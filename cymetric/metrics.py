@@ -93,6 +93,50 @@ def metric(name=None, depends=NotImplemented, schema=NotImplemented):
 ## General Metrics ##
 #####################
 
+# 4-way join
+_joindeps = [
+    ('Resources', ('SimId', 'QualId', 'ResourceId', 'ObjId', 'TimeCreated', 'Units'), 
+        'Quantity'),
+    ('Compositions', ('SimId', 'QualId', 'NucId'), 'MassFrac'),
+    ('Transactions', ('SimId', 'TransactionId', 'SenderId', 'ReceiverId', 
+        'ResourceId'), 'Commodity'),
+    ('AgentEntry', ('SimId', 'AgentId', 'ParentId'), 'Prototype')
+    ]
+
+_joinschema = [
+    ('SimId', ts.UUID), ('QualId', ts.INT), 
+    ('ResourceId', ts.INT), ('ObjId', ts.INT),
+    ('TimeCreated', ts.INT), ('NucId', ts.INT), 
+    ('Mass', ts.DOUBLE), ('Commodity', ts.STRING),
+    ('Units', ts.STRING), ('TransactionId', ts.INT), 
+    ('SenderId', ts.INT), ('ReceiverId', ts.INT),
+    ('ParentId', ts.INT), ('Prototype', ts.STRING)
+    ]
+
+@metric(name='BigJoin', depends=_joindeps, schema=_joinschema)
+def big_join(series):
+    """4-way join to test cymetric.
+    """
+    x = pd.merge(series[0].reset_index(), series[1].reset_index(), 
+            on=['SimId', 'QualId'], how='inner').set_index(['SimId', 'QualId', 
+                'ResourceId', 'ObjId','TimeCreated', 'NucId', 'Units'])
+    xx = x['Quantity'] * x['MassFrac']
+    xx.name = 'Mass'
+    y = pd.merge(xx.reset_index(), series[2].reset_index(), 
+            on=['SimId', 'ResourceId'], how='inner').set_index(['SimId', 'QualId', 
+                'ResourceId', 'ObjId','TimeCreated', 'NucId', 'Units', 
+                'TransactionId', 'SenderId', 'ReceiverId'])
+    z = pd.merge(y.reset_index(), series[3].reset_index(), 
+            left_on = ['SimId', 'ReceiverId'], right_on=['SimId', 'AgentId'], 
+            how='left').set_index(['SimId', 'QualId', 'ResourceId', 'ObjId', 
+            'TimeCreated', 'NucId', 'Mass', 'Commodity', 'Units', 'TransactionId', 
+            'SenderId', 'ReceiverId', 'ParentId'])
+    j = z.reset_index()
+    return j
+
+del _joindeps, _joinschema
+
+
 # Material Mass (quantity * massfrac)
 _matdeps = [
     ('Resources', ('SimId', 'QualId', 'ResourceId', 'ObjId', 'TimeCreated', 'Units'), 
