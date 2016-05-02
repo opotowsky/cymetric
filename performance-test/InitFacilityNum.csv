@@ -177,6 +177,8 @@ InitFacilityNum,DbType,TableEval,Inventory,NucsTracked,WriteFlag,Time,DbSize,TbS
 2000,h5,BigJoin[:],none,nea_spent_uox,--no-write,60.62015891075134,23941556,
 2000,h5,BigJoin[NucId==942390000],none,nea_spent_uox,--no-write,30.23854112625122,23941556,
 2000,h5,TransactionQuantity[:],none,nea_spent_uox,--write,257.282350063324,54721669,
+2000,h5,BigJoin[:],none,nea_spent_uox,--write,312.0318729877472,55950629,
+2000,h5,BigJoin[NucId==942390000],none,nea_spent_uox,--write,59.04301190376282,55950629,
 10,sqlite,TransactionQuantity[:],none,three,--no-write,0.5227799415588379,1698816,
 10,sqlite,BigJoin[:],none,three,--no-write,0.5418210029602051,1698816,
 10,sqlite,BigJoin[NucId==942390000],none,three,--no-write,0.5103139877319336,1698816,
@@ -372,4 +374,15 @@ InitFacilityNum,DbType,TableEval,Inventory,NucsTracked,WriteFlag,Time,DbSize,TbS
 2000,sqlite,TransactionQuantity[:],inv,nea_spent_uox,--no-write,45.84230589866638,797689856,
 2000,sqlite,BigJoin[:],inv,nea_spent_uox,--no-write,55.015268087387085,797689856,
 2000,sqlite,BigJoin[NucId==942390000],inv,nea_spent_uox,--no-write,21.691721200942993,797689856,
-2000,sqlite,TransactionQuantity[:],inv,nea_spent_uox,--write,246.4312539100647,1209866240,538000
+2000,sqlite,TransactionQuantity[:],inv,nea_spent_uox,--write,240.88177609443665,1209866240,538000
+2000,sqlite,BigJoin[:],inv,nea_spent_uox,--write,194.30669498443604,1829974016,6662000
+2000,sqlite,BigJoin[NucId==942390000],inv,nea_spent_uox,--write,39.999845027923584,1829974016,6662000
+2000,h5,TransactionQuantity[:],inv_compact,three,--write,70.98774409294128,47249530,
+2000,h5,BigJoin[:],inv_compact,three,--write,78.86377692222595,55695501,
+2000,h5,BigJoin[NucId==942390000],inv_compact,three,--write,40.80676984786987,55695501,
+2000,h5,TransactionQuantity[:],inv_compact,eight,--write,105.47056889533997,51626137,
+2000,h5,BigJoin[:],inv_compact,eight,--write,140.84327006340027,65345360,
+2000,h5,BigJoin[NucId==942390000],inv_compact,eight,--write,47.651288986206055,65345360,
+2000,h5,TransactionQuantity[:],inv_compact,nea_spent_uox,--write,269.9841368198395,67759055,
+2000,h5,BigJoin[:],inv_compact,nea_spent_uox,--write,311.7092299461365,99797103,
+2000,h5,BigJoin[NucId==942390000],inv_compact,nea_spent_uox,--write,61.2932710647583,99797103,
