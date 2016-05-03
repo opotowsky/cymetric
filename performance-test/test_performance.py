@@ -35,12 +35,12 @@ def run_test(params, keys, colname):
     ref_input = "./testing.xml"
     # Output files
     #outfiles = ["output_temp.h5", "output_temp.sqlite"]
-    outfiles = ["output_temp.h5"]
+    outfiles = ["output_temp.sqlite"]
     # Nucs tracked
     nucs = ['three', 'eight', 'nea_spent_uox']
     # Inventory tables
     #inv = ['none', 'inv', 'inv_compact']
-    inv = ['inv', 'inv_compact']
+    inv = ['inv_compact']
     # Tables to evaluate
     tables = ["TransactionQuantity[:]", "BigJoin[:]", "BigJoin[NucId==942390000]"]
     for db in outfiles:
@@ -52,8 +52,7 @@ def run_test(params, keys, colname):
                     safe_call(cmd)
         
                     # Get some info on cymetric processing time and save it to file
-                    #dbwrite = ["--no-write", "--write"]
-                    dbwrite = ["--no-write"]
+                    dbwrite = ["--no-write", "--write"]
                     dbtype = db.replace('output_temp.', '')
                     for w in dbwrite:
                         for table in tables:
