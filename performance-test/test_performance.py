@@ -9,7 +9,8 @@ def test_timestep():
     """
     """
     # Set of input parameters to change the simulation duration
-    params = [["2400"], ["5000"], ["10000"], ["50000"]]
+    #params = [["2400"], ["5000"], ["10000"], ["50000"]]
+    params = [["100000"], ["500000"]]
     # Key for defaults dict
     keys= ["simdur"]
     colname = "SimDur"
@@ -20,8 +21,7 @@ def test_facilities_initial():
     """
     """
     # Two sets of input parameters to change the number of facilities in each sim
-    #params = [["10"], ["100"], ["1000"], ["2000"]]
-    params = [["2000"]]
+    params = [["10"], ["100"], ["1000"], ["2000"]]
     # Key for defaults dict
     keys= ["facnum"]
     colname = "InitFacilityNum"
@@ -34,13 +34,11 @@ def run_test(params, keys, colname):
     # Simulation input file for performance testing
     ref_input = "./testing.xml"
     # Output files
-    #outfiles = ["output_temp.h5", "output_temp.sqlite"]
-    outfiles = ["output_temp.h5"]
+    outfiles = ["output_temp.h5", "output_temp.sqlite"]
     # Nucs tracked
     nucs = ['three', 'eight', 'nea_spent_uox']
     # Inventory tables
-    #inv = ['none', 'inv', 'inv_compact']
-    inv = ['inv']
+    inv = ['none', 'inv', 'inv_compact']
     # Tables to evaluate
     tables = ["TransactionQuantity[:]", "BigJoin[:]", "BigJoin[NucId==942390000]"]
     for db in outfiles:
@@ -52,8 +50,7 @@ def run_test(params, keys, colname):
                     safe_call(cmd)
         
                     # Get some info on cymetric processing time and save it to file
-                    #dbwrite = ["--no-write", "--write"]
-                    dbwrite = ["--write"]
+                    dbwrite = ["--no-write", "--write"]
                     dbtype = db.replace('output_temp.', '')
                     for w in dbwrite:
                         for table in tables:
@@ -78,8 +75,8 @@ def run_test(params, keys, colname):
     return
 
 def main():
-    test_facilities_initial()
-    #test_timestep()
+    #test_facilities_initial()
+    test_timestep()
     return
 
 if __name__ == "__main__":
