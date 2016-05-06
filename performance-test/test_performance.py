@@ -9,8 +9,7 @@ def test_timestep():
     """
     """
     # Set of input parameters to change the simulation duration
-    #params = [["2400"], ["5000"], ["10000"], ["50000"]]
-    params = [["100000"], ["500000"]]
+    params = [["2400"], ["5000"], ["10000"], ["50000"]]
     # Key for defaults dict
     keys= ["simdur"]
     colname = "SimDur"
@@ -75,7 +74,7 @@ def run_test(params, keys, colname):
     return
 
 def main():
-    #test_facilities_initial()
+    test_facilities_initial()
     test_timestep()
     return
 
