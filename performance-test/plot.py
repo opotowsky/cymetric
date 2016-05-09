@@ -6,93 +6,61 @@ import matplotlib.pyplot as plt
 import matplotlib.cbook as cbook
 import pandas as pd
 
-# Plotting a preliminary version of performance testing data
+# Plotting performance testing data
 
-if_data = pd.read_csv('./InitFacilityNum_old.csv', delimiter=',', index_col=0)
-ts_data = pd.read_csv('./SimDur_old.csv', delimiter=',', index_col=0)
+if_data = pd.read_csv('./InitFacilityNum.csv', delimiter=',', index_col=0)
+ts_data = pd.read_csv('./SimDur.csv', delimiter=',', index_col=0)
 
-# IF: Time vs DbSize by nucs tracked
-# HDF5
-h_if_no_w = if_data[(if_data['WriteFlag']=='--no-write') & (if_data['DbType']=='h5')]
-h_if_no_3 = h_if_no_w[h_if_no_w['NucsTracked']=='three']
-h_if_no_8 = h_if_no_w[h_if_no_w['NucsTracked']=='eight']
-h_if_no_23 = h_if_no_w[h_if_no_w['NucsTracked']=='nea_spent_uox']
+# Pre-filter
+if_none = if_data[(if_data['TableEval']=='BigJoin[:]') & (if_data['Inventory']=='none') & (if_data['WriteFlag']=='--write')]
+if_inv = if_data[(if_data['TableEval']=='BigJoin[:]') & (if_data['Inventory']=='inv') & (if_data['WriteFlag']=='--write')]
+if_inv_c = if_data[(if_data['TableEval']=='BigJoin[:]') & (if_data['Inventory']=='inv_compact') & (if_data['WriteFlag']=='--write')]
+ts_none = ts_data[(ts_data['TableEval']=='BigJoin[:]') & (ts_data['Inventory']=='none') & (ts_data['WriteFlag']=='--write')]
+ts_inv = ts_data[(ts_data['TableEval']=='BigJoin[:]') & (ts_data['Inventory']=='inv') & (ts_data['WriteFlag']=='--write')]
+ts_inv_c = ts_data[(ts_data['TableEval']=='BigJoin[:]') & (ts_data['Inventory']=='inv_compact') & (ts_data['WriteFlag']=='--write')]
 
-h_if_w = if_data[(if_data['WriteFlag']=='--write') & (if_data['DbType']=='h5')] 
-h_if_w_3 = h_if_w[h_if_w['NucsTracked']=='three']
-h_if_w_8 = h_if_w[h_if_w['NucsTracked']=='eight']
-h_if_w_23 = h_if_w[h_if_w['NucsTracked']=='nea_spent_uox']
+# Time vs DbSize by nucs tracked, HDF5 vs SQLite
+full_params = ['Initial Facility Number, ', 'Simulation Duration, ']
+params = ['InitFacilityNum', 'SimDur']
+dbtype = ['h5', 'sqlite']
+nucs = ['three', 'eight', 'nea_spent_uox']
+nums = ['3', '8', '23']
+lines = ['--', '-.', '-']
 
-h_ax = h_if_no_3.plot(x='DbSize', y='Time', kind='scatter', legend=False)
-h_if_no_8.plot(ax = h_ax, x='DbSize', y='Time', kind='scatter', legend=False)
-h_if_no_23.plot(ax = h_ax, x='DbSize', y='Time', kind='scatter', legend=False)
-h_if_w_3.plot(ax = h_ax, x='DbSize', y='Time', kind='scatter', legend=False)
-h_if_w_8.plot(ax = h_ax, x='DbSize', y='Time', kind='scatter', legend=False)
-h_if_w_23.plot(ax = h_ax, x='DbSize', y='Time', kind='scatter', legend=False)
+# Customize
+mpl.rcParams.update({'font.size': 16})
+mpl.rcParams['lines.linewidth'] = 2.5
+mpl.rcParams['lines.markersize'] = 10 
 
-hl = plt.legend()
-hl.get_texts()[0].set_text('no-write, 3 nucs')
-hl.get_texts()[1].set_text('no-write, 8 nucs')
-hl.get_texts()[2].set_text('no-write, 23 nucs')
-hl.get_texts()[3].set_text('write, 3 nucs')
-hl.get_texts()[4].set_text('write, 8 nucs')
-hl.get_texts()[5].set_text('write, 23 nucs')
-hl.set_title('Write Flag & Nucs Tracked, HDF5')
-plt.show()
-
-#SQLITE
-s_if_no_w = if_data[(if_data['WriteFlag']=='--no-write') & (if_data['DbType']=='sqlite')]
-s_if_no_3 = s_if_no_w[s_if_no_w['NucsTracked']=='three']
-s_if_no_8 = s_if_no_w[s_if_no_w['NucsTracked']=='eight']
-s_if_no_23 = s_if_no_w[s_if_no_w['NucsTracked']=='nea_spent_uox']
-
-s_if_w = if_data[(if_data['WriteFlag']=='--write') & (if_data['DbType']=='sqlite')] 
-s_if_w_3 = s_if_w[s_if_w['NucsTracked']=='three']
-s_if_w_8 = s_if_w[s_if_w['NucsTracked']=='eight']
-s_if_w_23 = s_if_w[s_if_w['NucsTracked']=='nea_spent_uox']
-
-s_ax = s_if_no_3.plot(x='DbSize', y='Time', kind='scatter', legend=False)
-s_if_no_8.plot(ax = s_ax, x='DbSize', y='Time', kind='scatter', legend=False)
-s_if_no_23.plot(ax = s_ax, x='DbSize', y='Time', kind='scatter', legend=False)
-s_if_w_3.plot(ax = s_ax, x='DbSize', y='Time', kind='scatter', legend=False)
-s_if_w_8.plot(ax = s_ax, x='DbSize', y='Time', kind='scatter', legend=False)
-s_if_w_23.plot(ax = s_ax, x='DbSize', y='Time', kind='scatter', legend=False)
-
-sl = plt.legend()
-sl.get_texts()[0].set_text('no-write, 3 nucs')
-sl.get_texts()[1].set_text('no-write, 8 nucs')
-sl.get_texts()[2].set_text('no-write, 23 nucs')
-sl.get_texts()[3].set_text('write, 3 nucs')
-sl.get_texts()[4].set_text('write, 8 nucs')
-sl.get_texts()[5].set_text('write, 23 nucs')
-sl.set_title('Write Flag & Nucs Tracked, SQLITE')
-plt.show()
-
-# TS: Time vs DbSize by nucs tracked
-ts_no_w = ts_data[ts_data['WriteFlag']=='--no-write']
-ts_no_3 = ts_no_w[ts_no_w['NucsTracked']=='three']
-ts_no_8 = ts_no_w[ts_no_w['NucsTracked']=='eight']
-ts_no_23 = ts_no_w[ts_no_w['NucsTracked']=='nea_spent_uox']
-
-ts_w = ts_data[ts_data['WriteFlag']=='--write'] 
-ts_w_3 = ts_w[ts_w['NucsTracked']=='three']
-ts_w_8 = ts_w[ts_w['NucsTracked']=='eight']
-ts_w_23 = ts_w[ts_w['NucsTracked']=='nea_spent_uox']
-
-hh_ax = ts_no_3.plot(x='DbSize', y='Time', kind='scatter', legend=False)
-ts_no_8.plot(ax = hh_ax, x='DbSize', y='Time', kind='scatter', legend=False)
-ts_no_23.plot(ax = hh_ax, x='DbSize', y='Time', kind='scatter', legend=False)
-ts_w_3.plot(ax = hh_ax, x='DbSize', y='Time', kind='scatter', legend=False)
-ts_w_8.plot(ax = hh_ax, x='DbSize', y='Time', kind='scatter', legend=False)
-ts_w_23.plot(ax = hh_ax, x='DbSize', y='Time', kind='scatter', legend=False)
-
-ll = plt.legend()
-ll.get_texts()[0].set_text('no-write, 3 nucs')
-ll.get_texts()[1].set_text('no-write, 8 nucs')
-ll.get_texts()[2].set_text('no-write, 23 nucs')
-ll.get_texts()[3].set_text('write, 3 nucs')
-ll.get_texts()[4].set_text('write, 8 nucs')
-ll.get_texts()[5].set_text('write, 23 nucs')
-ll.set_title('Write Flag & Nucs Tracked, HDF5')
-plt.show()
+for p, param in zip(full_params, params):
+    for d in dbtype:
+        count = 0
+        for n, s, num in zip(nucs, lines, nums):
+            if full_params.index(p)==0:
+                df1 = if_none[(if_none['NucsTracked']==n) & (if_none['DbType']==d)]
+                df2 = if_inv[(if_inv['NucsTracked']==n) & (if_inv['DbType']==d)]
+                df3 = if_inv[(if_inv_c['NucsTracked']==n) & (if_inv_c['DbType']==d)]
+            elif full_params.index(p)==1:
+                df1 = ts_none[(ts_none['NucsTracked']==n) & (ts_none['DbType']==d)]
+                df2 = ts_inv[(ts_inv['NucsTracked']==n) & (ts_inv['DbType']==d)]
+                df3 = ts_inv[(ts_inv_c['NucsTracked']==n) & (ts_inv_c['DbType']==d)]
+            s1 = 'b' + s
+            s2 = 'r' + s
+            s3 = 'g' + s
+            lbl1 = 'No Inv: ' + num + ' nucs'
+            lbl2 = 'Inv: ' + num + ' nucs'
+            lbl3 = 'Comp Inv: ' + num + ' nucs'
+            if count==0:
+                ax1 = df1.plot(x='DbSize', y='Time', label=lbl1, style=s1, marker='.')
+            else:
+                df1.plot(ax=ax1, x='DbSize', y='Time', label=lbl1, style=s1, marker='.')
+            ax2 = ax1.twiny()
+            ax1.set_xlabel('DbSize (B)')
+            ax2.set_xlabel(param)
+            df2.plot(ax=ax1, x='DbSize', y='Time', label=lbl2, style=s2, marker='.')
+            #df3.plot(ax=ax1, x='DbSize', y='Time', label=lbl3, style=s3, marker='.')
+            count += 1
+        title = p + 'Inv Table & Nucs Tracked (Write Only): ' + d
+        plt.title(title, y=1.09)
+        plt.show()
 
