@@ -19,7 +19,10 @@ ts_none = ts_data[(ts_data['TableEval']=='BigJoin[:]') & (ts_data['Inventory']==
 ts_inv = ts_data[(ts_data['TableEval']=='BigJoin[:]') & (ts_data['Inventory']=='inv') & (ts_data['WriteFlag']=='--write')]
 ts_inv_c = ts_data[(ts_data['TableEval']=='BigJoin[:]') & (ts_data['Inventory']=='inv_compact') & (ts_data['WriteFlag']=='--write')]
 
-# Time vs DbSize by nucs tracked, HDF5 vs SQLite
+##################################################
+# Time vs DbSize by nucs tracked, HDF5 vs SQLite #
+##################################################
+
 full_params = ['Initial Facility Number, ', 'Simulation Duration, ']
 params = ['InitFacilityNum', 'SimDur']
 dbtype = ['h5', 'sqlite']
@@ -63,4 +66,8 @@ for p, param in zip(full_params, params):
         title = p + 'Inv Table & Nucs Tracked (Write Only): ' + d
         plt.title(title, y=1.09)
         plt.show()
+
+#####################
+# Time v Table Size #
+#####################
 
